@@ -2,11 +2,15 @@
 RESTful recommendation logic for recommending activities and restaurants.
 
 Budiness logic service that is defined by the following recommendation rules:
-* always recommend 5 items
-* recommend to new users with no ratings and no preference the top rated items -> TODO: implement listActivitiesWithCount and listRestaurantsWithCount
-* recommend to new user with no ratings (3 preference at least) -> item based recommendation
-* recommend to existing users with rating -> user based recommendation
-* recommend activity -> filter="activity" in 'type'
-* recommend restaurant -> filter="restaurant" in 'type'
-* recommend item based on location
-* recommend item based on topic
+* we always recommend 5 items
+* when the user has not ratings we use item based recommendation based on one random item from the user's preferences (those were given while registration), and if they don't have preference we just give 5 random items with given type and city 
+* when the user has ratings we use user based recommendation with respect to user's ratings and preferences
+* we always take city and activity type into consideration
+
+The following methods for the different endpoints are available in this service:
+
+https://sde-recommendation-ws.herokuapp.com/:
+
+- /recommend @GET |[userId, type, city] | Returns 5 recommended items according to the rules above.
+
+Reference: Recombee API (version 1.6.0), Available at: https://docs.recombee.com/api.html.

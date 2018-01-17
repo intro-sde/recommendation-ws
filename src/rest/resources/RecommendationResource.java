@@ -21,6 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.recombee.api_client.bindings.Item;
 import com.recombee.api_client.exceptions.ApiException;
 
+import rest.recommend.RecommendItems;
+
 @Stateless
 @LocalBean
 @Path("/recommend")
@@ -31,28 +33,15 @@ public class RecommendationResource {
 	@Context
 	Request request;
 	
-	/*	
-	 * 	always recommend 5 items
-	 *  recommend to new users with no ratings and no preference the top rated items -> TODO: implement listActivitiesWithCount and listRestaurantsWithCount
-	 *  recommend to new user with no ratings (3 preference at least) -> item based recommendation
-	 *  recommend to existing users with rating -> user based recommendation
-	 *  recommend activity -> filter="activity" in 'type'
-	 *  recommend restaurant -> filter="restaurant" in 'type'
-	 *  recommend item based on location
-	 *  recommend item based on topic
-	 */
-	
-	/*
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
-	public String search(@DefaultValue("")@QueryParam("keyword") String keyword) throws ApiException, IOException {
+	public String recommend(@QueryParam("userId") String userId, @QueryParam("type") String type, @QueryParam("city") String city) throws ApiException, IOException {
 		System.out.println("--> RecommendationResource request...");
 		System.out.println("--> URI = "+uriInfo);
 		System.out.println("--> request = "+request);
-		String items = SearchItems.search(keyword);
-		//Entity entity = Entity.json(items);
+		String items = RecommendItems.recommendToUser(userId, type, city);
 		return items;
 	}
-	*/
+
 	
 }
