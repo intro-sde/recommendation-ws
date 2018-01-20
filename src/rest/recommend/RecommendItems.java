@@ -126,23 +126,44 @@ public class RecommendItems {
 		WebTarget service = config();
 		String itemId = prepareItemId(userId,type);
 		//return random items if no preference found
-		if (itemId=="null") {
+		if (itemId.equals("null")) {
 			System.out.println("randomFive");
 			return randomFiveItems(type, city);
 		}
 		System.out.println("itemId for rec: " + itemId);
+		Response resp =null;
+		if (type.equals("activity")) {
+			System.out.println("activity");
+			resp = service.path("/recombee/recommendation/item_based")
+					.queryParam("itemId", itemId)
+					.queryParam("count", "5")
+					.queryParam("userId", userId)
+					.queryParam("userImpact", "0.4")
+					.queryParam("filter", "\""+type+"\""+ " in 'type' and " + "\""+city+"\"" + " in 'city'")
+					.queryParam("properties", "name,topic,city,from,to")
+					.request().accept(MediaType.APPLICATION_JSON).header("Content-type","application/json").get();
+		}else {
+			System.out.println("resta");
+			resp = service.path("/recombee/recommendation/item_based")
+					.queryParam("itemId", itemId)
+					.queryParam("count", "5")
+					.queryParam("userId", userId)
+					.queryParam("userImpact", "0.4")
+					.queryParam("filter", "\""+type+"\""+ " in 'type' and " + "\""+city+"\"" + " in 'city'")
+					.queryParam("properties", "name,topic,city,address,rating")
+					.request().accept(MediaType.APPLICATION_JSON).header("Content-type","application/json").get();
+		}
 		//get recommendation
-		Response resp = service.path("/recombee/recommendation/item_based")
-				.queryParam("itemId", itemId)
-				.queryParam("count", "5")
-				.queryParam("userId", userId)
-				.queryParam("userImpact", "0.4")
-				.queryParam("filter", "\""+type+"\""+ " in 'type' and " + "\""+city+"\"" + " in 'city'")
-				.request().accept(MediaType.APPLICATION_JSON).header("Content-type","application/json").get();
+
 		String response = resp.readEntity(String.class);
-		String json = format(response);
-		return json;
-		
+		JSONArray newArray = new JSONArray();
+		JSONArray array = new JSONArray(response);
+		for (int i=0;i<array.length();i++) {
+			newArray.put(array.getJSONObject(i).get("values"));
+		}
+		//String json = format(newA);
+		return newArray.toString();			
+	
 	}
 
 	 private static String randomFiveItems(String type, String city) throws IOException {
@@ -157,22 +178,39 @@ public class RecommendItems {
 	}
 
 	/*
-	 * For users that already have recommendation. User based recommendation.
+	 * For users that already have rating. User based recommendation.
 	 */
 	public static String recToUserWithRatings(String userId, String type, String city) throws IOException {
 		WebTarget service = config();
-		String itemId = prepareItemId(userId,type);
-		System.out.println("itemId for rec: " + itemId);
+		
 		//get recommendation
-		Response resp = service.path("/recombee/recommendation/user_based")
+		Response resp =null;
+		if (type.equals("activity")) {
+			System.out.println("activity");
+		  resp = service.path("/recombee/recommendation/user_based")
 				.queryParam("userId", userId)
 				.queryParam("count", "5")
 				.queryParam("filter", "\""+type+"\""+ " in 'type' and " + "\""+city+"\"" + " in 'city'")
+				.queryParam("properties", "name,topic,city,from,to")
 				.request().accept(MediaType.APPLICATION_JSON).header("Content-type","application/json").get();
+		} else {
+			System.out.println("restaurant");
+			resp = service.path("/recombee/recommendation/user_based")
+					.queryParam("userId", userId)
+					.queryParam("count", "5")
+					.queryParam("filter", "\""+type+"\""+ " in 'type' and " + "\""+city+"\"" + " in 'city'")
+					.queryParam("properties", "name,topic,city,address,rating")
+					.request().accept(MediaType.APPLICATION_JSON).header("Content-type","application/json").get();
+		}
+				
 		String response = resp.readEntity(String.class);
-		String json = format(response);
-		return json;
-		
+		JSONArray newArray = new JSONArray();
+		JSONArray array = new JSONArray(response);
+		for (int i=0;i<array.length();i++) {
+			newArray.put(array.getJSONObject(i).get("values"));
+		}
+		//String json = format(newA);
+		return newArray.toString();		
 	}
 	
 	public static boolean checkIfUserHasRatings(String userId) {
