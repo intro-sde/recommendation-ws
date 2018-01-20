@@ -3,7 +3,7 @@ RESTful recommendation logic for recommending activities and restaurants.
 
 Budiness logic service that is defined by the following recommendation rules:
 * we always recommend 5 items
-* when the user has not ratings we use item based recommendation based on one random item from the user's preferences (those were given while registration), and if they don't have preference we just give 5 random items with given type and city 
+* when the user has no ratings we use item based recommendation based on one random item from the user's preferences, and if they don't have preference we just give 5 random items with given type and city 
 * when the user has ratings we use user based recommendation with respect to user's ratings and preferences
 * we always take city and activity type into consideration
 
