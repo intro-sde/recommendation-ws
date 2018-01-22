@@ -13,4 +13,4 @@ https://sde-recommendation-ws.herokuapp.com/:
 
 - /recommend @GET |[userId, type, city] | Returns 5 recommended items according to the rules above.
 
-Reference: Recombee API (version 1.6.0), Available at: https://docs.recombee.com/api.html.
+Reference: Recombee API (version 1.6.0), Available at: https://docs.recombee.com/api.html
