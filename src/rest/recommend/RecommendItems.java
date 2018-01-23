@@ -143,7 +143,7 @@ public class RecommendItems {
 					.queryParam("properties", "name,topic,city,from,to")
 					.request().accept(MediaType.APPLICATION_JSON).header("Content-type","application/json").get();
 		}else {
-			System.out.println("resta");
+			System.out.println("restaurant");
 			resp = service.path("/recombee/recommendation/item_based")
 					.queryParam("itemId", itemId)
 					.queryParam("count", "5")
